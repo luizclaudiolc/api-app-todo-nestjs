@@ -32,6 +32,11 @@ export class UserController {
     return await this.userService.findOne(id);
   }
 
+  @Get('/some/:isDone')
+  async findSome(@Param('isDone') isDone: number) {
+    return await this.userService.findSome(isDone);
+  }
+
   @Patch('/:id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return await this.userService.update(id, updateUserDto);
