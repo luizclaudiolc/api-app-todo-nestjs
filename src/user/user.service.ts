@@ -48,8 +48,6 @@ export class UserService {
 
   async findSome(data: number) {
     const isDone = Boolean(data);
-    console.log(isDone);
-
     const usersWithTasks = await this.prisma.user.findMany({
       where: {
         tasks: {

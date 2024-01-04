@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -27,21 +27,36 @@ export class TaskService {
   }
 
   async findOne(id: string) {
-    return await this.prisma.task.findFirst({
-      where: {
-        id,
-      },
-      select: {
-        user: {
-          select: {
-            name: true,
-          },
+    try {
+      const task = await this.prisma.task.findFirst({
+        where: {
+          id,
         },
-        title: true,
-        description: true,
-        isDone: true,
-      },
-    });
+        select: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+          title: true,
+          description: true,
+          isDone: true,
+        },
+      });
+
+      if (!task) {
+        throw new NotFoundException('Tarefa não encontrada!');
+      }
+
+      return task;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+
+      console.error('Erro ao buscar a tarefa:', error);
+      throw new Error('Erro interno ao buscar a tarefa.');
+    }
   }
 
   async update(id: string, updateTaskDto: UpdateTaskDto) {
