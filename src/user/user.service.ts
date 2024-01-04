@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -26,17 +26,60 @@ export class UserService {
     });
   }
 
-  async findOne(id: string) {
-    return await this.prisma.user.findFirst({
-      where: {
-        id,
-      },
-      select: {
-        name: true,
-        email: true,
-        tasks: true,
-      },
-    });
+  async findOneById(id: string) {
+    try {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          id,
+        },
+        select: {
+          name: true,
+          email: true,
+          tasks: true,
+        },
+      });
+
+      if (!user) {
+        throw new NotFoundException('Usuário não encontrado!');
+      }
+
+      return user;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+
+      console.error('Erro ao buscar o usuário:', error);
+      throw new Error('Erro interno ao buscar o usuário.');
+    }
+  }
+
+  async findOneByEmail(email: string) {
+    try {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          email,
+        },
+        select: {
+          email: true,
+          password: true,
+          name: true,
+        },
+      });
+
+      if (!user) {
+        throw new NotFoundException('Usuário não encontrado!');
+      }
+
+      return user;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+
+      console.error('Erro ao buscar o usuário:', error);
+      throw new Error('Erro interno ao buscar o usuário.');
+    }
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {

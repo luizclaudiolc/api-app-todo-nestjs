@@ -29,7 +29,7 @@ export class UserController {
 
   @Get('/:id')
   async findOne(@Param('id') id: string) {
-    return await this.userService.findOne(id);
+    return await this.userService.findOneById(id);
   }
 
   @Get('/some/:isDone')
