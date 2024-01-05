@@ -7,21 +7,21 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class TaskService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createTaskDto: CreateTaskDto) {
-    console.log(createTaskDto);
-
+  async create(data: CreateTaskDto) {
     return await this.prisma.task.create({
-      data: createTaskDto,
+      data,
     });
   }
 
-  async findAll() {
+  async findAllByUserId(userId: string) {
     return await this.prisma.task.findMany({
+      where: {
+        userId,
+      },
       select: {
         title: true,
         description: true,
         isDone: true,
-        user: true,
       },
     });
   }
@@ -59,12 +59,12 @@ export class TaskService {
     }
   }
 
-  async update(id: string, updateTaskDto: UpdateTaskDto) {
+  async update(id: string, data: UpdateTaskDto) {
     return await this.prisma.task.update({
       where: {
         id,
       },
-      data: updateTaskDto,
+      data,
     });
   }
 

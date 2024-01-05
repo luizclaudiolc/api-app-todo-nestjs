@@ -8,10 +8,13 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('api/v2/user')
 export class UserController {
@@ -22,9 +25,11 @@ export class UserController {
     return await this.userService.create(createUserDto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
-  async findAll() {
-    return await this.userService.findAll();
+  async findAll(@Request() req) {
+    const { userId } = req.user;
+    return await this.userService.findAll(userId);
   }
 
   @Get('/:id')

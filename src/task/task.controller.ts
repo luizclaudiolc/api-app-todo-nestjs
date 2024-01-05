@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
@@ -26,8 +27,10 @@ export class TaskController {
   }
 
   @Get()
-  async findAll() {
-    return await this.taskService.findAll();
+  async findAll(@Request() req) {
+    const userId = req.user.userId;
+
+    return await this.taskService.findAllByUserId(userId);
   }
 
   @Get('/:id')
