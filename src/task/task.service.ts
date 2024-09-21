@@ -7,10 +7,15 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class TaskService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: CreateTaskDto) {
-    return await this.prisma.task.create({
-      data,
+  async create(data: CreateTaskDto, userId: string) {
+    const task = await this.prisma.task.create({
+      data: {
+        ...data,
+        userId,
+      },
     });
+
+    return task;
   }
 
   async findAllByUserId(userId: string) {
