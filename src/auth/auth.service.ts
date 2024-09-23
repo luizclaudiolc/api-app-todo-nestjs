@@ -38,7 +38,10 @@ export class AuthService {
       data,
     });
 
-    return user;
+    return {
+      name: user.name,
+      email: user.email,
+    };
   }
 
   async validateUser(email: string, password: string) {
