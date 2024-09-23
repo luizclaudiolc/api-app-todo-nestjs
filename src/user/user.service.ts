@@ -61,9 +61,9 @@ export class UserService {
         },
       });
 
-      if (!user) {
+      /* if (!user) {
         throw new NotFoundException('Usuário não encontrado!');
-      }
+      } */
 
       return user;
     } catch (error) {
