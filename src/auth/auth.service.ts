@@ -1,4 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync, hashSync } from 'bcrypt';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -26,7 +30,6 @@ export class AuthService {
   }
 
   async create(data: CreateUserDto) {
-    // Verifica se o email já está registrado
     const existingUser = await this.userService.findOneByEmail(data.email);
     if (existingUser) {
       throw new ConflictException('Email já está em uso');
@@ -45,6 +48,20 @@ export class AuthService {
   }
 
   async validateUser(email: string, password: string) {
+    const user = await this.userService.findOneByEmail(email);
+    if (!user) {
+      throw new UnauthorizedException('Usuário ou senha incorretos');
+    }
+
+    const validPassword = compareSync(password, user.password);
+    if (!validPassword) {
+      throw new UnauthorizedException('Usuário ou senha incorretos');
+    }
+
+    return user;
+  }
+
+  /* async validateUser(email: string, password: string) {
     let user;
     try {
       user = await this.userService.findOneByEmail(email);
@@ -55,5 +72,5 @@ export class AuthService {
     const validPassword = compareSync(password, user.password);
     if (!validPassword) return null;
     return user;
-  }
+  } */
 }
