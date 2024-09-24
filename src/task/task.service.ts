@@ -24,6 +24,7 @@ export class TaskService {
         userId,
       },
       select: {
+        id: true,
         title: true,
         description: true,
         isDone: true,
@@ -43,6 +44,7 @@ export class TaskService {
               name: true,
             },
           },
+          id: true,
           title: true,
           description: true,
           isDone: true,
