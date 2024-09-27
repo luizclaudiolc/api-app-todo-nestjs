@@ -33,19 +33,22 @@ export class TaskController {
     return await this.taskService.findAllByUserId(userId);
   }
 
-  @Get('/:id')
-  async findOne(@Param('id') id: string) {
-    return await this.taskService.findOne(id);
+  @Get('/:publicId')
+  async findOne(@Param('publicId') publicId: string) {
+    return await this.taskService.findOne(publicId);
   }
 
-  @Patch('/:id')
-  async update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
-    return await this.taskService.update(id, updateTaskDto);
+  @Patch('/:publicId')
+  async update(
+    @Param('publicId') publicId: string,
+    @Body() updateTaskDto: UpdateTaskDto,
+  ) {
+    return await this.taskService.update(publicId, updateTaskDto);
   }
 
-  @Delete(':id')
+  @Delete(':publicId')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string) {
-    return await this.taskService.remove(id);
+  async remove(@Param('publicId') publicId: string) {
+    return await this.taskService.remove(publicId);
   }
 }

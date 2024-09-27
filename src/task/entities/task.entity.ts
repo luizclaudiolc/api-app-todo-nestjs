@@ -1,7 +1,8 @@
 import { Prisma } from '@prisma/client';
 
 export class Task implements Prisma.TaskUncheckedCreateInput {
-  id?: string;
+  id?: number;
+  publicId?: string;
   title: string;
   description: string;
   isDone?: boolean;

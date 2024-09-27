@@ -11,7 +11,8 @@ datasource db {
 }
 
 model Task {
-  id          String   @id @default(uuid())
+  id          Int      @id @default(autoincrement())
+  publicId    String   @unique @default(uuid()) @map("public_id")
   title       String
   description String
   isDone      Boolean  @default(false)
