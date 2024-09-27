@@ -10,6 +10,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// model Task {
+//   id          String   @id @default(uuid())
+//   title       String
+//   description String
+//   user        User     @relation(fields: [userId], references: [id])
+//   userId      String
+//   create_at   DateTime @default(now())
+//   update_at   DateTime @updatedAt
+// }
+
+// model User {
+//   id        String   @id @default(uuid())
+//   name      String
+//   email     String   @unique
+//   password  String
+//   tasks     Task[]
+//   create_at DateTime @default(now())
+//   update_at DateTime @updatedAt
+//   delete_at DateTime @default(now())
+// }
 model Task {
   id          Int      @id @default(autoincrement())
   publicId    String   @unique @default(uuid()) @map("public_id")
@@ -17,11 +37,9 @@ model Task {
   description String
   isDone      Boolean  @default(false)
   user        User?    @relation(fields: [userId], references: [id])
-  userId      String
+  userId      String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  @@map("tasks")
 }
 
 model User {
@@ -33,6 +51,4 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deletedAt DateTime @default(now())
-
-  @@map("users")
 }
