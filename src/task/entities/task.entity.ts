@@ -5,7 +5,7 @@ export class Task implements Prisma.TaskUncheckedCreateInput {
   title: string;
   description: string;
   isDone?: boolean;
-  userId?: string;
+  userId: string;
   createdAt?: string | Date;
   updatedAt?: string | Date;
 }
