@@ -1,6 +1,6 @@
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { AuthService } from './auth.service';
+import { AuthService, IRequestWithUser } from './auth.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 
 @Controller('api/v2/auth')
@@ -9,8 +9,8 @@ export class AuthController {
 
   @UseGuards(AuthGuard('local'))
   @Post('/login')
-  async login(@Req() req: any) {
-    return await this.authService.login(req.user);
+  async login(@Req() req: IRequestWithUser) {
+    return await this.authService.login(req);
   }
 
   @Post('/create')

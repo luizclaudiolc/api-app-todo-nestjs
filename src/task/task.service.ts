@@ -19,12 +19,11 @@ export class TaskService {
     return task;
   }
 
-  // Buscar todas as tarefas de um usuário usando userId
   async findAllByUserId(userId: string) {
     return await this.prisma.task.findMany({
       where: { userId },
       select: {
-        publicId: true, // Exibe o publicId em vez do id
+        publicId: true,
         title: true,
         description: true,
         isDone: true,
@@ -32,17 +31,16 @@ export class TaskService {
     });
   }
 
-  // Buscar uma tarefa por publicId
   async findOne(publicId: string) {
     const task = await this.prisma.task.findUnique({
-      where: { publicId }, // Busca pela coluna publicId
+      where: { publicId },
       select: {
         user: {
           select: {
             name: true,
           },
         },
-        publicId: true, // Retorna o publicId
+        publicId: true,
         title: true,
         description: true,
         isDone: true,
@@ -56,10 +54,9 @@ export class TaskService {
     return task;
   }
 
-  // Atualizar uma tarefa pelo publicId
   async update(publicId: string, data: UpdateTaskDto) {
     const task = await this.prisma.task.update({
-      where: { publicId }, // Usa o publicId para encontrar a tarefa
+      where: { publicId },
       data,
     });
 

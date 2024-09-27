@@ -5,9 +5,21 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync, hashSync } from 'bcrypt';
+import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserService } from 'src/user/user.service';
+
+export interface IRequestUser {
+  id: string;
+  userId: string;
+  email: string;
+  name: string;
+}
+
+export interface IRequestWithUser extends Request {
+  user: IRequestUser;
+}
 
 @Injectable()
 export class AuthService {
@@ -17,15 +29,20 @@ export class AuthService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async login(user) {
+  async login(user: IRequestWithUser) {
+    const {
+      user: { id, userId, name, email },
+    } = user;
+
     const payload = {
-      sub: user.id,
-      email: user.email,
+      sub: id,
+      email,
     };
 
     return {
       token: this.jwtService.sign(payload, { expiresIn: '7d' }),
-      name: user.name,
+      name,
+      userId,
     };
   }
 
@@ -37,13 +54,13 @@ export class AuthService {
 
     data.password = hashSync(data.password, +process.env.SALT_HASH);
 
-    const user = await this.prisma.user.create({
+    const { name, email } = await this.prisma.user.create({
       data,
     });
 
     return {
-      name: user.name,
-      email: user.email,
+      name,
+      email,
     };
   }
 
@@ -60,17 +77,4 @@ export class AuthService {
 
     return user;
   }
-
-  /* async validateUser(email: string, password: string) {
-    let user;
-    try {
-      user = await this.userService.findOneByEmail(email);
-    } catch (error) {
-      return null;
-    }
-
-    const validPassword = compareSync(password, user.password);
-    if (!validPassword) return null;
-    return user;
-  } */
 }
