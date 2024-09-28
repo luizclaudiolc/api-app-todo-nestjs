@@ -11,11 +11,10 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { TaskService } from './task.service';
-import { AuthGuard } from '@nestjs/passport';
-import { IRequestUser } from 'src/auth/auth.service';
 
 @Controller('api/v2/task')
 @UseGuards(AuthGuard('jwt'))
@@ -23,16 +22,13 @@ export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Post()
-  async create(
-    @Body() createTaskDto: CreateTaskDto,
-    @Request() { userId }: IRequestUser,
-  ) {
-    return await this.taskService.create(createTaskDto, userId);
+  async create(@Body() createTaskDto: CreateTaskDto, @Request() req) {
+    return await this.taskService.create(createTaskDto, req.user.id);
   }
 
   @Get()
-  async findAll(@Request() { userId }: IRequestUser) {
-    return await this.taskService.findAllByUserId(userId);
+  async findAll(@Request() req) {
+    return await this.taskService.findAllByUserId(req.user.id);
   }
 
   @Get('/:publicId')
