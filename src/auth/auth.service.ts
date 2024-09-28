@@ -12,7 +12,6 @@ import { UserService } from 'src/user/user.service';
 
 export interface IRequestUser {
   id: string;
-  userId: string;
   email: string;
   name: string;
 }
@@ -29,10 +28,8 @@ export class AuthService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async login(user: IRequestWithUser) {
-    const {
-      user: { id, userId, name, email },
-    } = user;
+  async login(user) {
+    const { id, name, email } = user;
 
     const payload = {
       sub: id,
@@ -42,7 +39,6 @@ export class AuthService {
     return {
       token: this.jwtService.sign(payload, { expiresIn: '7d' }),
       name,
-      userId,
     };
   }
 
