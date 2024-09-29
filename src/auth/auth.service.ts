@@ -5,19 +5,18 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync, hashSync } from 'bcrypt';
-import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserService } from 'src/user/user.service';
 
-export interface IRequestUser {
+type userRequest = {
   id: string;
   email: string;
+  password: string;
   name: string;
-}
-
-export interface IRequestWithUser extends Request {
-  user: IRequestUser;
+};
+export interface IUserRequest {
+  user: userRequest;
 }
 
 @Injectable()
@@ -28,7 +27,7 @@ export class AuthService {
     private readonly prisma: PrismaService,
   ) {}
 
-  async login(user) {
+  async login(user: IUserRequest['user']) {
     const { id, name, email } = user;
 
     const payload = {

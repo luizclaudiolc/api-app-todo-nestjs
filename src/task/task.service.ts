@@ -3,14 +3,20 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
+type userType = {
+  email: string;
+  userId: string;
+};
+export interface IRequestUser {
+  user: userType;
+}
+
 @Injectable()
 export class TaskService {
   constructor(private readonly prisma: PrismaService) {}
 
   // Criar uma nova tarefa associada a um usuário
   async create(data: CreateTaskDto, userId: string) {
-    console.log(userId);
-
     const task = await this.prisma.task.create({
       data: {
         ...data,
