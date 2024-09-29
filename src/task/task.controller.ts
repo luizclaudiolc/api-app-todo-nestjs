@@ -23,30 +23,29 @@ export class TaskController {
 
   @Post()
   async create(@Body() createTaskDto: CreateTaskDto, @Request() req) {
-    return await this.taskService.create(createTaskDto, req.user.id);
+    console.log(req.user.userId);
+
+    return await this.taskService.create(createTaskDto, req.user.userId);
   }
 
   @Get()
   async findAll(@Request() req) {
-    return await this.taskService.findAllByUserId(req.user.id);
+    return await this.taskService.findAllByUserId(req.user.userId);
   }
 
-  @Get('/:publicId')
-  async findOne(@Param('publicId') publicId: string) {
-    return await this.taskService.findOne(publicId);
+  @Get('/:id')
+  async findOne(@Param('id') id: string) {
+    return await this.taskService.findOne(id);
   }
 
-  @Patch('/:publicId')
-  async update(
-    @Param('publicId') publicId: string,
-    @Body() updateTaskDto: UpdateTaskDto,
-  ) {
-    return await this.taskService.update(publicId, updateTaskDto);
+  @Patch('/:id')
+  async update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
+    return await this.taskService.update(id, updateTaskDto);
   }
 
-  @Delete(':publicId')
+  @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('publicId') publicId: string) {
-    return await this.taskService.remove(publicId);
+  async remove(@Param('id') id: string) {
+    return await this.taskService.remove(id);
   }
 }

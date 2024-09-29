@@ -9,6 +9,8 @@ export class TaskService {
 
   // Criar uma nova tarefa associada a um usuário
   async create(data: CreateTaskDto, userId: string) {
+    console.log(userId);
+
     const task = await this.prisma.task.create({
       data: {
         ...data,
@@ -23,7 +25,7 @@ export class TaskService {
     return await this.prisma.task.findMany({
       where: { userId },
       select: {
-        publicId: true,
+        id: true,
         title: true,
         description: true,
         isDone: true,
@@ -31,16 +33,16 @@ export class TaskService {
     });
   }
 
-  async findOne(publicId: string) {
+  async findOne(id: string) {
     const task = await this.prisma.task.findUnique({
-      where: { publicId },
+      where: { id },
       select: {
         user: {
           select: {
             name: true,
           },
         },
-        publicId: true,
+        id: true,
         title: true,
         description: true,
         isDone: true,
@@ -54,9 +56,9 @@ export class TaskService {
     return task;
   }
 
-  async update(publicId: string, data: UpdateTaskDto) {
+  async update(id: string, data: UpdateTaskDto) {
     const task = await this.prisma.task.update({
-      where: { publicId },
+      where: { id },
       data,
     });
 
@@ -67,10 +69,10 @@ export class TaskService {
     return task;
   }
 
-  // Remover uma tarefa pelo publicId
-  async remove(publicId: string) {
+  // Remover uma tarefa pelo id
+  async remove(id: string) {
     const task = await this.prisma.task.delete({
-      where: { publicId }, // Usa o publicId para remover a tarefa
+      where: { id }, // Usa o id para remover a tarefa
     });
 
     if (!task) {
