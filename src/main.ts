@@ -16,7 +16,7 @@ async function bootstrap() {
   // Configurando o CORS
   app.enableCors({
     /* origin: 'https://app-todo-front-angular.vercel.app', */
-    origin: 'http://localhost/4200',
+    origin: 'http://localhost:4200',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders:
       'Content-Type, Accept, Authorization, token, X-Custom-Header',
