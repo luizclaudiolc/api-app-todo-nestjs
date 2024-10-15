@@ -8,40 +8,39 @@ import {
   Param,
   Patch,
   Post,
-  Request,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { IRequestUser, TaskService } from './task.service';
+import { TaskService } from './task.service';
+import { JwtAuthGuard } from 'src/auth/strategies/jwt-auth-guard';
+import { CurrentUserDto } from 'src/auth/strategies/current-user.tdo';
+import { CurrentUser } from 'src/auth/strategies/current-user-decorator';
 
-@Controller('api/v2/task')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
+@Controller('api/v2/task/')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Post()
   async create(
     @Body() createTaskDto: CreateTaskDto,
-    @Request() req: IRequestUser,
+    @CurrentUser() { userId }: CurrentUserDto,
   ) {
-    const { userId } = req.user;
     return await this.taskService.create(createTaskDto, userId);
   }
 
   @Get()
-  async findAll(@Request() req) {
-    const { userId } = req.user;
+  async findAll(@CurrentUser() { userId }: CurrentUserDto) {
     return await this.taskService.findAllByUserId(userId);
   }
 
-  @Get('/:id')
+  @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.taskService.findOne(id);
   }
 
-  @Patch('/:id')
+  @Patch(':id')
   async update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
     return await this.taskService.update(id, updateTaskDto);
   }

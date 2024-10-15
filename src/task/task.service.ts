@@ -15,7 +15,6 @@ export interface IRequestUser {
 export class TaskService {
   constructor(private readonly prisma: PrismaService) {}
 
-  // Criar uma nova tarefa associada a um usuário
   async create(data: CreateTaskDto, userId: string) {
     const task = await this.prisma.task.create({
       data: {

@@ -8,39 +8,39 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
-  Request,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/strategies/jwt-auth-guard';
+import { CurrentUserDto } from 'src/auth/strategies/current-user.tdo';
+import { CurrentUser } from 'src/auth/strategies/current-user-decorator';
 
-@Controller('api/v2/user')
+@UseGuards(JwtAuthGuard)
+@Controller('api/v2/user/')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @UseGuards(AuthGuard('jwt'))
   @Get()
-  async findAll(@Request() req) {
-    const { userId } = req.user;
+  async findAll(@CurrentUser() { userId }: CurrentUserDto) {
     return await this.userService.findAll(userId);
   }
 
-  @Get('/:id')
+  @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.userService.findOneById(id);
   }
 
-  @Get('/some/:isDone')
+  @Get('/some:isDone')
   async findSome(@Param('isDone') isDone: number) {
     return await this.userService.findSome(isDone);
   }
 
-  @Patch('/:id')
+  @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return await this.userService.update(id, updateUserDto);
   }
 
-  @Delete('/:id')
+  @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string) {
     return await this.userService.remove(id);
