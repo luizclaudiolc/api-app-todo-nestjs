@@ -52,7 +52,7 @@ export class AuthService {
       { expiresIn: '1h' },
     );
 
-    return { accessToken, refreshToken };
+    return { accessToken, refreshToken, name: existingUser.name };
   }
 
   async create(data: CreateUserDto) {
@@ -82,7 +82,7 @@ export class AuthService {
 
       const userTokenId = this.refreshTokenVersions.get(payload.sub);
       if (!userTokenId || userTokenId !== payload.tokenId) {
-        throw new UnauthorizedException('Invalid refresh token');
+        throw new UnauthorizedException('Invalid refresh token AQUUII');
       }
 
       const newTokenId = uuidv4();
@@ -104,7 +104,7 @@ export class AuthService {
 
       const newAccessToken = this.jwtService.sign(
         { ...newPayload, type: 'access' },
-        { expiresIn: '120s' },
+        { expiresIn: '120' },
       );
 
       const newRefreshToken = this.jwtService.sign(
